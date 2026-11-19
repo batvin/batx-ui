@@ -1,0 +1,16 @@
+node_modules
+.env
+.env.*
+!.env.example
+data
+backups
+.git
+.gitignore
+*.zip
+*.log
+coverage
+test
+INSTALL.html
+compose.yaml
+Caddyfile
+scripts
