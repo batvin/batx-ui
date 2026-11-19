@@ -6,8 +6,8 @@ ENV NODE_ENV=production \
     DATA_DIR=/app/data
 
 WORKDIR /app
-COPY package.json package-lock.json* ./
-RUN if [ -f package-lock.json ]; then npm ci --omit=dev; else npm install --omit=dev; fi && npm cache clean --force
+COPY package.json ./
+RUN npm install --omit=dev && npm cache clean --force
 
 COPY --chown=node:node server.mjs ./
 COPY --chown=node:node lib ./lib
