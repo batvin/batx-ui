@@ -125,7 +125,8 @@ app.post('/api/configs/:id/qr', requireAuth, async (req, res) => {
   }
 });
 
-app.get('*', (req, res) => {
+// Express 5 / path-to-regexp v8 requires a named parameter for catch-all
+app.get('/{*path}', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
