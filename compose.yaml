@@ -8,6 +8,7 @@ services:
       HOST: 127.0.0.1
       PORT: "8787"
       DATA_DIR: /app/data
+      NODE_TLS_REJECT_UNAUTHORIZED: "0"
     volumes:
       - batx_data:/app/data
     restart: unless-stopped
