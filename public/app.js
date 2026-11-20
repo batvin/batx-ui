@@ -2,7 +2,7 @@
 
 const $ = (sel, root = document) => root.querySelector(sel);
 const $$ = (sel, root = document) => [...root.querySelectorAll(sel)];
-const esc = v => String(v ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const esc = v => String(v ?? '').replace(/[&<>"']/g, c => ({'&':'&','<':'<','>':'>','"':'"',"'":'&#39;'}[c]));
 
 const state = { user: null, settings: null, configs: [] };
 
@@ -93,10 +93,11 @@ async function route(page) {
     content.innerHTML = `
       <div class="card">
         <form id="settings-form">
-          <div class="field"><label>آدرس کامل پنل 3x-ui (با path مخفی)</label><input name="url" value="${esc(s.url || '')}" placeholder="https://example.com:2053/secret/" required></div>
-          <div class="field"><label>نام کاربری 3x-ui</label><input name="username" value="${esc(s.username || '')}" required></div>
-          <div class="field"><label>رمز عبور 3x-ui</label><input name="password" type="password" value="" placeholder="${s.password ? '•••••••• (خالی بگذارید اگر تغییر نمی‌دهید)' : ''}"></div>
-          <div class="field"><label>Public Host (برای ساخت لینک)</label><input name="publicHost" value="${esc(s.publicHost || '')}" placeholder="example.com"></div>
+          <div class="field"><label>آدرس کامل پنل 3x-ui (با path مخفی)</label><input name="url" value="${esc(s.url || '')}" placeholder="https://127.0.0.1:8443/secret/" required></div>
+          <div class="field"><label>API Token (توصیه می‌شود — از Settings → Security → API Token)</label><input name="apiToken" type="password" value="" placeholder="${s.apiToken ? '•••••••• (خالی بگذارید اگر تغییر نمی‌دهید)' : 'Bearer token'}"></div>
+          <div class="field"><label>نام کاربری 3x-ui (اختیاری اگر توکن دارید)</label><input name="username" value="${esc(s.username || '')}"></div>
+          <div class="field"><label>رمز عبور 3x-ui (اختیاری اگر توکن دارید)</label><input name="password" type="password" value="" placeholder="${s.password ? '••••••••' : ''}"></div>
+          <div class="field"><label>Public Host (برای ساخت لینک اشتراک)</label><input name="publicHost" value="${esc(s.publicHost || '')}" placeholder="gkoo.elvamk.shop"></div>
           <div class="field"><label>Subscription Base (اختیاری)</label><input name="subscriptionBase" value="${esc(s.subscriptionBase || '')}"></div>
           <button class="btn primary" type="submit">ذخیره</button>
         </form>
@@ -106,7 +107,8 @@ async function route(page) {
       const fd = new FormData(e.target);
       const body = {
         url: fd.get('url'),
-        username: fd.get('username'),
+        apiToken: fd.get('apiToken') || undefined,
+        username: fd.get('username') || undefined,
         password: fd.get('password') || undefined,
         publicHost: fd.get('publicHost'),
         subscriptionBase: fd.get('subscriptionBase')
@@ -123,7 +125,7 @@ async function route(page) {
     try {
       state.configs = await api('/api/configs');
       if (!state.configs.length) {
-        content.innerHTML = `<div class="card empty">هنوز کانفیگی نیست. ابتدا اتصال 3x-ui را تنظیم کنید.</div>`;
+        content.innerHTML = `<div class="card empty">هنوز کانفیگی نیست یا لیست خالی است.</div>`;
         return;
       }
       content.innerHTML = `
